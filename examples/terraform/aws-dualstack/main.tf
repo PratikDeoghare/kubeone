@@ -80,13 +80,6 @@ data "aws_internet_gateway" "default" {
   }
 }
 
-ipv6_cidr_block = cidrsubnet(
-  data.aws_vpc.selected.ipv6_cidr_block,
-  local.subnet_newbits,
-  (random_integer.cidr_block.result + count.index) % local.subnet_total, // TODO: fix this hack
-)
-
-assign_ipv6_address_on_creation = true
 
 resource "aws_default_vpc" "default" {}
 
@@ -108,6 +101,14 @@ resource "aws_subnet" "public" {
     local.subnet_newbits,
     (random_integer.cidr_block.result + count.index) % local.subnet_total,
   )
+
+  ipv6_cidr_block = cidrsubnet(
+    data.aws_vpc.selected.ipv6_cidr_block,
+    local.subnet_newbits,
+    (random_integer.cidr_block.result + count.index) % local.subnet_total, // TODO: fix this hack
+  )
+
+  assign_ipv6_address_on_creation = true
 
   tags = tomap({
     "Name"                   = "${var.cluster_name}-${data.aws_availability_zones.available.names[count.index]}",

@@ -361,7 +361,7 @@ func newHostConfig(publicIP, privateIP string, ipv6addr []string, idx int, spec 
 	}
 
 	if idx < len(spec.SSHHostKeys) {
-		if pubKey := spec.SSHHostKeys[idx]; pubKe6y != nil {
+		if pubKey := spec.SSHHostKeys[idx]; pubKey != nil {
 			hostConfig.SSHHostPublicKey = pubKey
 		}
 	}
