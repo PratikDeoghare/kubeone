@@ -70,7 +70,7 @@ data "aws_ami" "ami" {
 }
 
 data "aws_vpc" "selected" {
-  id = var.vpc_id == "default" ? aws_default_vpc.default.id : var.vpc_id
+  id = var.vpc_id
 }
 
 data "aws_internet_gateway" "default" {
@@ -79,9 +79,6 @@ data "aws_internet_gateway" "default" {
     values = [data.aws_vpc.selected.id]
   }
 }
-
-
-resource "aws_default_vpc" "default" {}
 
 resource "random_integer" "cidr_block" {
   min = 0
