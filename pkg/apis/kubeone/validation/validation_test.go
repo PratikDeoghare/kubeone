@@ -250,6 +250,9 @@ func TestValidateKubeOneCluster(t *testing.T) {
 
 	for _, tc := range tests {
 		tc := tc
+		tc.cluster.ClusterNetwork = kubeoneapi.ClusterNetworkConfig{
+			IPFamily: kubeoneapi.IPFamilyIPv4,
+		}
 		t.Run(tc.name, func(t *testing.T) {
 			errs := ValidateKubeOneCluster(tc.cluster)
 			if (len(errs) == 0) == tc.expectedError {
@@ -997,6 +1000,7 @@ func TestValidateClusterNetworkConfig(t *testing.T) {
 			clusterNetworkConfig: kubeoneapi.ClusterNetworkConfig{
 				PodSubnet:     "192.168.1.0/24",
 				ServiceSubnet: "192.168.0.0/24",
+				IPFamily: kubeoneapi.IPFamilyIPv4,
 			},
 			expectedError: false,
 		},
@@ -1005,6 +1009,7 @@ func TestValidateClusterNetworkConfig(t *testing.T) {
 			clusterNetworkConfig: kubeoneapi.ClusterNetworkConfig{
 				PodSubnet:     "192.168.1.0/24",
 				ServiceSubnet: "192.168.0.0/24",
+				IPFamily: kubeoneapi.IPFamilyIPv4,
 				CNI: &kubeoneapi.CNI{
 					Canal: &kubeoneapi.CanalSpec{MTU: 1500},
 				},
@@ -1013,7 +1018,9 @@ func TestValidateClusterNetworkConfig(t *testing.T) {
 		},
 		{
 			name:                 "empty network config",
-			clusterNetworkConfig: kubeoneapi.ClusterNetworkConfig{},
+			clusterNetworkConfig: kubeoneapi.ClusterNetworkConfig{
+				IPFamily: kubeoneapi.IPFamilyIPv4,
+			},
 			expectedError:        false,
 		},
 		{
@@ -1021,6 +1028,7 @@ func TestValidateClusterNetworkConfig(t *testing.T) {
 			clusterNetworkConfig: kubeoneapi.ClusterNetworkConfig{
 				PodSubnet:     "192.168.1.0",
 				ServiceSubnet: "192.168.0.0/24",
+				IPFamily: kubeoneapi.IPFamilyIPv4,
 			},
 			expectedError: true,
 		},
@@ -1029,12 +1037,14 @@ func TestValidateClusterNetworkConfig(t *testing.T) {
 			clusterNetworkConfig: kubeoneapi.ClusterNetworkConfig{
 				PodSubnet:     "192.168.1.0/24",
 				ServiceSubnet: "192.168.0.0",
+				IPFamily: kubeoneapi.IPFamilyIPv4,
 			},
 			expectedError: true,
 		},
 		{
 			name: "invalid cni config",
 			clusterNetworkConfig: kubeoneapi.ClusterNetworkConfig{
+				IPFamily: kubeoneapi.IPFamilyIPv4,
 				CNI: &kubeoneapi.CNI{
 					Canal:    &kubeoneapi.CanalSpec{},
 					WeaveNet: &kubeoneapi.WeaveNetSpec{},
