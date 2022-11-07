@@ -378,6 +378,7 @@ func ValidateClusterNetworkConfig(c kubeoneapi.ClusterNetworkConfig, fldPath *fi
 	validateCIDRs := func(node, subnet string) {
 		if len(subnet) == 0 {
 			allErrs = append(allErrs, subnetCountErr(node, subnet, len(subnetValidators), c.IPFamily))
+
 			return
 		}
 		subnets := strings.Split(subnet, ",")
@@ -397,14 +398,15 @@ func ValidateClusterNetworkConfig(c kubeoneapi.ClusterNetworkConfig, fldPath *fi
 
 	validateNodeCIDRMaskSize := func(nodeCIDRMaskSize *int, podCIDR string, fldPath *field.Path) {
 		if nodeCIDRMaskSize == nil {
-			allErrs = append(allErrs, field.Invalid(fldPath, nodeCIDRMaskSize,
-				fmt.Sprintf("node CIDR mask size must be set")))
+			allErrs = append(allErrs, field.Invalid(fldPath, nodeCIDRMaskSize, "node CIDR mask size must be set"))
+
 			return
 		}
 
 		_, podCIDRNet, err := net.ParseCIDR(podCIDR)
 		if err != nil {
 			allErrs = append(allErrs, field.Invalid(fldPath, podCIDR, fmt.Sprintf("couldn't parse CIDR %q: %v", podCIDR, err)))
+
 			return
 		}
 		podCIDRMaskSize, _ := podCIDRNet.Mask.Size()
@@ -412,6 +414,7 @@ func ValidateClusterNetworkConfig(c kubeoneapi.ClusterNetworkConfig, fldPath *fi
 		if podCIDRMaskSize >= *nodeCIDRMaskSize {
 			allErrs = append(allErrs, field.Invalid(fldPath, nodeCIDRMaskSize,
 				fmt.Sprintf("node CIDR mask size (%d) must be longer than the mask size of the pod CIDR (%q)", *nodeCIDRMaskSize, podCIDR)))
+
 			return
 		}
 	}
@@ -428,6 +431,7 @@ func ValidateClusterNetworkConfig(c kubeoneapi.ClusterNetworkConfig, fldPath *fi
 		parts := strings.Split(c.PodSubnet, ",")
 		if len(parts) != 2 {
 			allErrs = append(allErrs, subnetCountErr("podSubnet", c.PodSubnet, len(subnetValidators), c.IPFamily))
+
 			break
 		}
 		podCIDRIPv4, podCIDRIPv6 = parts[0], parts[1]
@@ -437,6 +441,7 @@ func ValidateClusterNetworkConfig(c kubeoneapi.ClusterNetworkConfig, fldPath *fi
 		parts := strings.Split(c.PodSubnet, ",")
 		if len(parts) != 2 {
 			allErrs = append(allErrs, subnetCountErr("podSubnet", c.PodSubnet, len(subnetValidators), c.IPFamily))
+
 			break
 		}
 		podCIDRIPv4, podCIDRIPv6 = parts[1], parts[0]
