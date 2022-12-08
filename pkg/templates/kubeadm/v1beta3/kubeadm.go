@@ -119,7 +119,7 @@ func NewConfig(s *state.State, host kubeoneapi.HostConfig) ([]runtime.Object, er
 			},
 		},
 		LocalAPIEndpoint: kubeadmv1beta3.APIEndpoint{
-			AdvertiseAddress: newNodeIP(host),
+			AdvertiseAddress: host.IPv6Addresses[0],
 		},
 	}
 
@@ -130,7 +130,7 @@ func NewConfig(s *state.State, host kubeoneapi.HostConfig) ([]runtime.Object, er
 		},
 		ControlPlane: &kubeadmv1beta3.JoinControlPlane{
 			LocalAPIEndpoint: kubeadmv1beta3.APIEndpoint{
-				AdvertiseAddress: newNodeIP(host),
+				AdvertiseAddress: host.IPv6Addresses[0],
 			},
 		},
 		Discovery: kubeadmv1beta3.Discovery{

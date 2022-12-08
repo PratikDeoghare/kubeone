@@ -51,9 +51,10 @@ func NewClientConfig(s *state.State, host kubeoneapi.HostConfig) (*clientv3.Conf
 	if err != nil {
 		return nil, fail.Etcd(err, "TLS config creating")
 	}
+	hostAddr := host.IPv6Addresses[0]
 
 	return &clientv3.Config{
-		Endpoints:   []string{fmt.Sprintf("%s:2379", host.PrivateAddress)},
+		Endpoints:   []string{fmt.Sprintf("[%s]:2379", hostAddr)},
 		TLS:         tlsConf,
 		Context:     s.Context,
 		DialTimeout: 5 * time.Second,
