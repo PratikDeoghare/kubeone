@@ -182,7 +182,7 @@ spec:
 ---
 apiVersion: v1
 data:
-  config: W2dsb2JhbF0KTm9kZUlQRmFtaWxpZXM9SVB2NgpOb2RlSVBGYW1pbGllcz1JUHY0Cg==
+  config: {{ awsCCMCloudConfig .Config.Name .Config.ClusterNetwork.IPFamily | b64enc }}
 kind: Secret
 metadata:
   name: cloud-config
